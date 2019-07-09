@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Home work 01</title>
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	
+
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="container">
+		<div id="app" v-cloak>
+			<h2>Список пользователей</h2>
+			<user-list v-bind:users="users">
+				
+			</user-list>
+
+			<nav aria-label="Page navigation example">
+				<ul class="pagination">
+					<li class="page-item"><a class="page-link" href="#">Previous</a></li>
+					<li class="page-item"><a class="page-link" href="#">1</a></li>
+					<li class="page-item"><a class="page-link" href="#">2</a></li>
+					<li class="page-item"><a class="page-link" href="#">3</a></li>
+					<li class="page-item"><a class="page-link" href="#">Next</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+
+		var userList = {
+			props: ['users'],
+			data: function () {
+				return {
+
+				}
+			},
+			template: `
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Имя</th>
+							<th>Фамилия</th>
+							<th>Активен</th>
+							<th>Баланс</th>
+							<th>Email</th>
+							<th>Телефон</th>
+							<th>Зарегистрирован</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="user in users" v-bind:key="user.id">
+							<td>
+								<a :href="'/' + user.id"># {{ user.id }}</a>
+							</td>
+							<td>
+								{{ user.firstName}}
+							</td>
+							<td>
+								{{ user.lastName}}
+							</td>
+							<td>
+								{{ user.isActive}}
+							</td>
+							<td>
+								{{ user.balance}}
+							</td>
+							<td>
+								{{ user.email}}
+							</td>
+							<td>
+								{{ user.phone}}
+							</td>
+							<td>
+								{{ user.registered}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			`
+		};
+
+		var app = new Vue({
+			el: '#app',
+			data: {
+				users: [],
+			},
+			created: function () {
+				this.loadData()	
+			},
+			methods: {
+				loadData: function () {
+					let self = this;
+					axios
+						.get('http://localhost:3000/users')
+						.then(function (response) {
+							self.users = response.data;
+							console.log("Данные пользователей загружены");
+
+						})
+				}
+			},
+			components: {
+				'user-list': userList
+			}
+			
+		})
+	</script>
+	
+</body>
+</html>

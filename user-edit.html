@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Home work 01</title>
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	
+
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="container">
+		<div id="app" v-cloak>
+			<h2>Редактирование пользователя</h2>
+			<form>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Имя</label>
+					<input type="email" class="form-control" value="">
+				</div>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Фамилия</label>
+					<input type="email" class="form-control" value="">
+				</div>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Баланс</label>
+					<input type="email" class="form-control" value="">
+				</div>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Телефон</label>
+					<input type="email" class="form-control" value="">
+				</div>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Адрес</label>
+					<input type="email" class="form-control" value="">
+				</div>
+				<div class="form-group">
+					<label for="exampleInputEmail1">Компания</label>
+					<input type="email" class="form-control" value="">
+				</div>
+
+				<button type="submit" class="btn btn-primary">Save changes</button>
+			</form>
+
+
+			<pre>
+				<code>
+				{
+				    "id": 0,
+				    "isActive": true,
+				    "balance": "$3,823.95",
+				    "picture": "http://placehold.it/128x128",
+				    "age": 20,
+				    "accessLevel": "guest",
+				    "firstName": "Dolores",
+				    "lastName": "Stephenson",
+				    "company": "TERRASYS",
+				    "email": "dolores.stephenson@terrasys.me",
+				    "phone": "+7 (970) 446-2686",
+				    "address": "585 Bassett Avenue, Forestburg, Oregon, 8181",
+				    "about": "Velit consequat officia eiusmod commodo reprehenderit minim aliqua consequat mollit fugiat laboris magna nulla. Minim magna minim id magna adipisicing. Sint amet elit est nulla quis commodo commodo voluptate ullamco amet nostrud.",
+				    "registered": "27.12.2017"
+				  }
+				</code>
+			</pre>
+
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script>
+		var userForm = {
+			data: function() {
+				return {
+
+				}
+			},
+			created: function () {
+				this.loadData()	
+			},
+			template: ``,
+		};
+		var app = new Vue({
+			el: '#app',
+			data: {
+				id: 4,
+				users: [],
+				user: {}
+			},
+			methods: {
+				loadData: function () {
+					let self = this;
+					axios
+						.get('http://jsonplaceholder.typicode.com/users')
+						.then(function (response) {
+							self.users = response.data;
+
+						})
+				},
+				getUserById: function (id) {
+
+					// this.user = 
+				}
+			},
+			components: {
+				'user-form': userForm
+			}
+			
+		})
+	</script>
+	
+</body>
+</html>
