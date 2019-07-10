@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Home work 01</title>
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	
+
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="container">
+		<div id="app" v-cloak>
+
+
+			<h2 v-if="listShown">Список пользователей</h2>
+			<h2 v-else>Редактирование пользователя</h2>
+
+			<template>
+				<user-list v-if="listShown" v-bind:users="users" v-on:idclick="goEditForm($event)"></user-list>
+				<user-form v-else v-bind:user="user"></user-form>
+			</template>
+
+			<div v-if="listShown">
+				<strong>Всего пользователей: {{totalUsers}}</strong>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+
+		var userList = {
+			name: 'UserList',
+			props: ['users'],
+			template: `
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Имя</th>
+							<th>Фамилия</th>
+							<th>Активен</th>
+							<th>Баланс</th>
+							<th>Email</th>
+							<th>Телефон</th>
+							<th>Зарегистрирован</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="user in users" v-bind:key="user.id">
+							<td>
+								<a 
+									:href="'user-edit.html?id=' + user.id"
+									v-on:click.prevent="onIdClick(user.id)"
+								>
+									# {{ user.id }}
+								</a>
+							</td>
+							<td>
+								{{ user.firstName}}
+							</td>
+							<td>
+								{{ user.lastName}}
+							</td>
+							<td>
+								{{ user.isActive}}
+							</td>
+							<td>
+								{{ user.balance}}
+							</td>
+							<td>
+								{{ user.email}}
+							</td>
+							<td>
+								{{ user.phone}}
+							</td>
+							<td>
+								{{ user.registered}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			`,
+			methods: {
+				onIdClick: function (id) {
+					console.log(id);
+					this.$emit('idclick', {id:id});
+				}
+			}
+		};
+
+		var userForm = {
+			name: 'UserForm',
+			props: ['user'],
+			template: `
+				<form>
+					<div class="form-group">
+						<label>Имя</label>
+						<input type="text" class="form-control" v-bind:value="user.firstName">
+					</div>
+					<div class="form-group">
+						<label>Фамилия</label>
+						<input type="text" class="form-control" v-bind:value="user.lastName">
+					</div>
+					<div class="form-group">
+						<label>Баланс</label>
+						<input type="text" class="form-control" v-bind:value="user.balance">
+					</div>
+					<div class="form-group">
+						<label>Телефон</label>
+						<input type="text" class="form-control" v-bind:value="user.phone">
+					</div>
+					<div class="form-group">
+						<label>Адрес</label>
+						<input type="text" class="form-control" v-bind:value="user.address">
+					</div>
+					<div class="form-group">
+						<label>Компания</label>
+						<input type="text" class="form-control" v-bind:value="user.company">
+					</div>
+				</form>
+			`,
+		};
+
+		var app = new Vue({
+			el: '#app',
+			data: {
+				userId: '',
+				users: [],
+				user: {},
+				listShown: true
+			},
+			created: function () {
+				this.loadData()	
+			},
+			computed: {
+				totalUsers: function() {
+					return this.users.length
+				}
+			},
+			methods: {
+				loadData: function () {
+					let urlStr = 'http://localhost:3000/users/' + this.userId;
+					axios
+						.get(urlStr)
+						.then( (response)=> {
+							if (this.userId !== '') {
+								this.user = response.data;
+							} else {
+								this.users = response.data;
+							}
+							console.log("Данные пользователей загружены");
+
+						})
+				},
+				goEditForm: function (data) {
+					this.userId = data.id;
+					this.listShown = false;
+				}
+			},
+			watch: {
+				'listShown' : {
+					handler: function () {
+						this.loadData()
+					}
+				}
+			},
+			components: {
+				'user-list': userList,
+				'user-form': userForm
+			}
+			
+		})
+	</script>
+	
+</body>
+</html>
